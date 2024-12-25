@@ -25,7 +25,9 @@ Step 1: Create a Static Library Project
 3.	Select Static Library from the C++ project templates. Choose the appropriate name (e.g., MyStaticLib).
 4.	Write your code that you want to include in the static library.
 Example:
-// MyStaticLib.h
+<pre>
+<code style="background-color: #eeeeee; border: 1px solid rgb(153, 153, 153); display: block; overflow: auto; padding: 20px;">
+    // MyStaticLib.h
 #pragma once
 
 class MathLib {
@@ -39,6 +41,8 @@ public:
 int MathLib::Add(int a, int b) {
     return a + b;
 }
+</code>
+</pre>
 Step 2: Build the Static Library
 1.	Build the project (Ctrl + Shift + B). This will create a .lib file that contains the compiled object code (e.g., MyStaticLib.lib).
 Step 3: Create a New Console Application
