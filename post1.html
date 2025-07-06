@@ -3,302 +3,65 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Vineet Unnikrishnan's Blog</title>
+        <title>Creating static and dynamic libraries using C++</title>
+        <link rel="icon" type="image/png" href="favicon.ico" />
         <link rel="stylesheet" href="styles.css" />
     </head>
     <body>
         <header>
-            <h1>Dev Blog</h1>
+            <div class="container">
+                <img
+                    src="your-photo.jpeg"
+                    alt="Your Photo"
+                    class="profile-pic"
+                />
+                <div class="intro">
+                    <h1>Vineet Unnikrishnan</h1>
+                    <p>
+                        Welcome! I'm a blogger and technology enthusiast sharing
+                        thoughts on development and digital life.
+                    </p>
+                </div>
+            </div>
         </header>
 
-        <section class="blog-posts">
+        <main class="container">
             <article>
-                <time datetime="2024-10-01">October 1, 2024</time>
+                <h2>Creating static and dynamic libraries using C++</h2>
+                <!--<p class="date">📅 July 6, 2025</p>
+
                 <p>
-                    Creating and using libraries in C++ helps modularize and organize your code. In C++, there are two main types of libraries: Static Libraries and Dynamic Libraries (also called Shared Libraries). Below is a detailed guide to creating and using both types of libraries in Visual Studio, with working examples.
-1. Static Libraries (.lib)
-A static library is a set of compiled object files that are linked directly into your executable at compile time.
-Steps to create and use a static library in Visual Studio:
-Step 1: Create a Static Library Project
-1.	Open Visual Studio and create a new project.
-2.	Go to File > New > Project.
-3.	Select Static Library from the C++ project templates. Choose the appropriate name (e.g., MyStaticLib).
-4.	Write your code that you want to include in the static library.
-Example:
-<pre>
-<code style="background-color: #eeeeee; border: 1px solid rgb(153, 153, 153); display: block; overflow: auto; padding: 20px;">
-    // MyStaticLib.h
-#pragma once
-
-class MathLib {
-public:
-    static int Add(int a, int b);
-};
-
-// MyStaticLib.cpp
-#include "MyStaticLib.h"
-
-int MathLib::Add(int a, int b) {
-    return a + b;
-}
-</code>
-</pre>
-Step 2: Build the Static Library
-1.	Build the project (Ctrl + Shift + B). This will create a .lib file that contains the compiled object code (e.g., MyStaticLib.lib).
-Step 3: Create a New Console Application
-1.	Create a new Console Application project where you want to use the static library.
-2.	Go to Project Properties of the console application, then:
-o	Under Configuration Properties > C/C++ > General, add the directory where the library header files are located to the Additional Include Directories.
-o	Under Configuration Properties > Linker > General, add the directory where the .lib file is located to the Additional Library Directories.
-o	Under Linker > Input, add MyStaticLib.lib to Additional Dependencies.
-Step 4: Use the Static Library
-Example:
-cpp
-Copy code
-#include <iostream>
-#include "MyStaticLib.h"
-
-int main() {
-    int result = MathLib::Add(5, 7);
-    std::cout << "Result: " << result << std::endl;
-    return 0;
-}
-Step 5: Build and Run the Console Application
-Build and run the application, and you should see the output:
-makefile
-Copy code
-Result: 12
-________________________________________
-2. Dynamic Libraries (.dll)
-Dynamic libraries are loaded at runtime, and multiple programs can share the same dynamic library.
-Steps to create and use a dynamic library in Visual Studio:
-Step 1: Create a Dynamic Library Project
-1.	Open Visual Studio and create a new project.
-2.	Go to File > New > Project.
-3.	Select Dynamic Link Library (DLL) from the C++ project templates. Choose an appropriate name (e.g., MyDynamicLib).
-4.	Write your code that you want to include in the dynamic library.
-Example:
-cpp
-Copy code
-// MyDynamicLib.h
-#pragma once
-
-#ifdef MYDYNAMICLIB_EXPORTS
-#define MYDYNAMICLIB_API __declspec(dllexport)
-#else
-#define MYDYNAMICLIB_API __declspec(dllimport)
-#endif
-
-class MYDYNAMICLIB_API MathLib {
-public:
-    static int Multiply(int a, int b);
-};
-
-// MyDynamicLib.cpp
-#include "MyDynamicLib.h"
-
-int MathLib::Multiply(int a, int b) {
-    return a * b;
-}
-Step 2: Build the Dynamic Library
-1.	Build the project (Ctrl + Shift + B). This will create a .dll file (e.g., MyDynamicLib.dll) and a .lib file (import library).
-Step 3: Create a New Console Application
-1.	Create a new Console Application project where you want to use the dynamic library.
-2.	Go to Project Properties of the console application, then:
-o	Under Configuration Properties > C/C++ > General, add the directory where the library header files are located to the Additional Include Directories.
-o	Under Configuration Properties > Linker > General, add the directory where the .lib file is located to the Additional Library Directories.
-o	Under Linker > Input, add MyDynamicLib.lib to Additional Dependencies.
-Step 4: Use the Dynamic Library
-Example:
-cpp
-Copy code
-#include <iostream>
-#include "MyDynamicLib.h"
-
-int main() {
-    int result = MathLib::Multiply(6, 8);
-    std::cout << "Result: " << result << std::endl;
-    return 0;
-}
-Step 5: Copy the DLL File
-Make sure that the generated .dll file (MyDynamicLib.dll) is either in the same directory as your executable or in a path accessible by your system's dynamic linker.
-Step 6: Build and Run the Console Application
-Build and run the application, and you should see the output:
-makefile
-Copy code
-Result: 48
-________________________________________
-Summary:
-•	Static Library (.lib): Linked at compile time, no need for an additional DLL during runtime.
-•	Dynamic Library (.dll): Linked at runtime, requires the .dll file to be present.
-You can switch between these libraries depending on whether you want to share libraries among multiple programs (dynamic) or have everything self-contained in a single executable (static).
-In C++ there are indeed multiple ways to create and use Dynamic Link Libraries (DLLs), depending on the method of exporting and importing functions. These methods include:
-1.	Using __declspec(dllexport) and __declspec(dllimport) directly in the source code.
-2.	Using a Module Definition File (.def).
-3.	Extern "C" for C-compatible exports (used to avoid name mangling in certain cases).
-Let's explore each method in detail:
-________________________________________
-Method 1: Using __declspec(dllexport) and __declspec(dllimport) Directly
-This is the most common method and was demonstrated earlier. It uses the __declspec(dllexport) directive to export functions or classes from a DLL, and __declspec(dllimport) to import them into the client application.
-Steps:
-1.	DLL Creation:
-o	Mark the symbols (functions or classes) you want to export using __declspec(dllexport) when building the DLL.
-cpp
-Copy code
-// MyDynamicLib.h
-#pragma once
-
-#ifdef MYDYNAMICLIB_EXPORTS
-#define MYDYNAMICLIB_API __declspec(dllexport)
-#else
-#define MYDYNAMICLIB_API __declspec(dllimport)
-#endif
-
-class MYDYNAMICLIB_API MathLib {
-public:
-    static int Multiply(int a, int b);
-};
-2.	Using the DLL:
-o	In the client application, __declspec(dllimport) is used to import the symbols. This import-export mechanism is controlled via preprocessor definitions (e.g., MYDYNAMICLIB_EXPORTS), which is set only during the DLL build.
-Advantages:
-•	This method is simple and widely used.
-•	Allows you to control which classes or functions are exported.
-________________________________________
-Method 2: Using a Module Definition File (.def)
-A module definition file (.def) is another method for exporting symbols from a DLL. Instead of using __declspec(dllexport) in the code, you can list the exported functions in the .def file. This can make your code cleaner by avoiding preprocessor directives.
-Steps:
-1.	Create the Module Definition File (.def):
-o	A .def file explicitly defines the exports from the DLL. For example:
-def
-Copy code
-// MyDynamicLib.def
-LIBRARY "MyDynamicLib"
-EXPORTS
-    Multiply @1
-2.	Modify the DLL Project:
-o	In your Visual Studio project, right-click the DLL project, go to Properties > Linker > Input, and under Module Definition File, specify the path to your .def file.
-3.	Use the Function in Your Code:
-o	Write the function normally, without __declspec(dllexport):
-cpp
-Copy code
-// MyDynamicLib.cpp
-extern "C" __declspec(dllexport) int Multiply(int a, int b) {
-    return a * b;
-}
-Using the DLL:
-•	The client application can use the function as if it were any normal DLL function, without worrying about __declspec macros.
-Advantages:
-•	Clean separation between export definition and code.
-•	Useful for exporting large numbers of functions without cluttering the source code.
-•	Easier to update exports without modifying the source code.
-________________________________________
-Method 3: Using extern "C" to Avoid Name Mangling (for C Compatibility)
-When exporting functions from a C++ DLL, the function names might get name mangled (encoded with extra information by the C++ compiler to support overloading, namespaces, etc.). If you want your DLL to be compatible with C code or avoid name mangling (especially when using LoadLibrary and GetProcAddress), you can use the extern "C" declaration.
-Steps:
-1.	Use extern "C":
-o	Mark your exported function as extern "C" to prevent name mangling.
-cpp
-Copy code
-// MyDynamicLib.cpp
-extern "C" __declspec(dllexport) int Multiply(int a, int b) {
-    return a * b;
-}
-•	With extern "C", the exported function name is not modified (no C++ name mangling).
-2.	Using in the Client Application:
-o	This is especially useful when you dynamically load the DLL using LoadLibrary and retrieve function pointers using GetProcAddress.
-cpp
-Copy code
-// Client.cpp (for dynamic loading)
-#include <windows.h>
-#include <iostream>
-
-typedef int(*MultiplyFunc)(int, int);
-
-int main() {
-    HINSTANCE hDLL = LoadLibrary(L"MyDynamicLib.dll");
-    if (hDLL != NULL) {
-        MultiplyFunc multiply = (MultiplyFunc)GetProcAddress(hDLL, "Multiply");
-        if (multiply != NULL) {
-            std::cout << "Multiply Result: " << multiply(3, 4) << std::endl;
-        }
-        FreeLibrary(hDLL);
-    }
-    return 0;
-}
-Advantages:
-•	Necessary for C compatibility.
-•	Enables dynamic loading of functions using GetProcAddress.
-________________________________________
-Summary of Methods:
-1.	Using __declspec(dllexport) and __declspec(dllimport):
-o	The most common and flexible way.
-o	Controls export/import directly from code using preprocessor macros.
-2.	Using a Module Definition File (.def):
-o	Separates the export list from the code, keeping it clean.
-o	Ideal for larger projects with many exports or legacy code.
-3.	Using extern "C" for C-Compatible Exports:
-o	Avoids name mangling, making the DLL compatible with C code or dynamic loading.
-o	Often used with LoadLibrary and GetProcAddress.
-When to Use Each Method:
-•	For simpler projects or when exporting a few functions/classes, use __declspec(dllexport)/__declspec(dllimport).
-•	For projects that export a large number of functions, consider using a .def file to keep the source code cleaner.
-•	For C compatibility or to avoid name mangling issues, use extern "C", especially when you plan to load the DLL dynamically.
-Each of these methods can be combined as needed to suit the requirements of your project.
-In C++, dynamic libraries (DLLs) can be linked in two primary ways:
-1.	Load-time linking (implicit linking): The DLL is linked when the application is loaded into memory (i.e., when the application starts).
-2.	Run-time linking (explicit linking): The DLL is loaded manually by the application during execution, typically using functions like LoadLibrary and GetProcAddress.
-Let’s see which methods we discussed correspond to these types of linking:
-________________________________________
-Load-time Linking (Implicit Linking)
-In load-time linking, the operating system loads the DLL when the application starts, and any exported functions or classes from the DLL are immediately available for use.
-•	Method 1: Using __declspec(dllexport) and __declspec(dllimport)
-This is load-time linking because the functions and classes are automatically linked during the application load. The client application doesn’t need to do anything extra to load the DLL; it's handled by the linker when you add the .lib file to the project.
-Example:
-o	The client application includes headers from the DLL and links to the .lib file generated by the DLL project.
-o	The OS automatically loads the DLL when the application is started, and you can call the DLL functions as normal.
-•	Method 2: Using a Module Definition File (.def)
-This is also load-time linking because it works the same way as the first method, just using a .def file instead of __declspec(dllexport) for exporting symbols. The client application still links to the .lib file at build time, and the DLL is loaded automatically when the application starts.
-Example:
-o	The .lib file and the .def file work together to allow the linker to connect the function calls in the client application to the DLL.
-________________________________________
-Run-time Linking (Explicit Linking)
-In run-time linking, the application loads the DLL manually using the LoadLibrary function and retrieves function pointers using GetProcAddress. This method gives you more control because you can decide when to load the DLL and handle errors if the DLL is not found.
-•	Method 3: Using extern "C" for C-compatible exports (dynamic loading)
-This is run-time linking. When you use LoadLibrary and GetProcAddress, you are explicitly telling the operating system to load the DLL and fetch the addresses of the functions at runtime. The client application doesn't link to the .lib file at build time. Instead, it loads the DLL only when it's needed.
-Example:
-o	You use LoadLibrary("MyDynamicLib.dll") to load the DLL during the application's runtime.
-o	After loading the DLL, you use GetProcAddress to retrieve the address of the exported function (like Multiply), and then call it via a function pointer.
-cpp
-Copy code
-HINSTANCE hDLL = LoadLibrary(L"MyDynamicLib.dll");
-MultiplyFunc multiply = (MultiplyFunc)GetProcAddress(hDLL, "Multiply");
-________________________________________
-Summary:
-•	Method 1 (__declspec(dllexport) / __declspec(dllimport)) → Load-time linking.
-•	Method 2 (Module Definition File, .def) → Load-time linking.
-•	Method 3 (extern "C" and dynamic loading with LoadLibrary) → Run-time linking.
-Load-time linking (methods 1 and 2) is easier to implement and is preferred when the DLL is always needed during the application's execution. Run-time linking (method 3) offers more flexibility and control, especially when you may not need the DLL immediately or when it's optional for the program's functionality.
-In conclusion:
-•	If you link to the DLL using its .lib file (as in Methods 1 and 2), the library is linked and loaded at application startup (load-time linking).
-•	If you load the DLL manually using LoadLibrary and retrieve functions with GetProcAddress, it's run-time linking (Method 3).
-
+                    Creating a blog from scratch was one of the most rewarding
+                    decisions I’ve made as a developer. I wanted full control
+                    over the design, performance, and simplicity—so I skipped
+                    platforms like WordPress and instead hand-crafted this using
+                    plain HTML, CSS, and a dash of thoughtful layout.
                 </p>
+
+                <h3>Why I didn’t use a CMS</h3>
+                <p>
+                    While Content Management Systems are powerful, I wanted the
+                    site to be minimal and lightweight. No plugins, no
+                    bloat—just clean markup and focused content.
+                </p>
+
+                <h3>Design goals</h3>
+                <ul>
+                    <li>Consistent layout across pages</li>
+                    <li>Fast loading, no heavy frameworks</li>
+                    <li>Mobile-first design with responsive elements</li>
+                </ul>
+
+                <p>
+                    If you’re curious about the exact structure or want to grab
+                    the template I used, I’d be happy to share it!
+                </p>-->
             </article>
-
-            <!--<article>
-                <h3><a href="post2.html">Blog Post Title 2</a></h3>
-                <time datetime="2024-09-25">September 25, 2024</time>
-                <p>
-                    Snippet of the second blog post goes here. A brief overview
-                    to attract readers.
-                </p>
-            </article>-->
-
-            <!-- Add more articles as needed -->
-        </section>
+            <p><a href="index.html">&larr; Back to Blog</a></p>
+        </main>
 
         <footer>
-            <p>&copy; 2024 Vineet Unnikrishnan. All rights reserved.</p>
+            <p>&copy; 2025 Your Name. All rights reserved.</p>
         </footer>
     </body>
 </html>
